@@ -1,0 +1,5 @@
+game.dSYM
+.editorconfig
+.vscode
+game
+.DS_store
