@@ -136,7 +136,7 @@ int isInCheckWhite(chessBoard *boardStruct, movePiece *mPiece) {
 		++temp;
 	}
 
-	int temp = boardStruct->whiteKing.j-1;
+	temp = boardStruct->whiteKing.j-1;
 	for (int i = boardStruct->whiteKing.i - 1; i >= 0 ; --i){
         if (boardStruct->board[i][temp]) {
             if (boardStruct->board[i][temp] == BishopBlack ||
@@ -149,7 +149,7 @@ int isInCheckWhite(chessBoard *boardStruct, movePiece *mPiece) {
 		--temp;
 	}
 	// up right/ down left
-	int temp = boardStruct->whiteKing.j-1;
+	temp = boardStruct->whiteKing.j-1;
 	for (int i = boardStruct->whiteKing.i + 1; i < 8 ; ++i){
         if (boardStruct->board[i][temp]) {
             if (boardStruct->board[i][temp] == BishopBlack ||
@@ -162,7 +162,7 @@ int isInCheckWhite(chessBoard *boardStruct, movePiece *mPiece) {
 		--temp;
 	}
 
-	int temp = boardStruct->whiteKing.j+1;
+	temp = boardStruct->whiteKing.j+1;
 	for (int i = boardStruct->whiteKing.i - 1; i >= 0 ; --i){
         if (boardStruct->board[i][temp]) {
             if (boardStruct->board[i][temp] == BishopBlack ||
