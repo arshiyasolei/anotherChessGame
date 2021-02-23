@@ -1,5 +1,6 @@
 #pragma once
-
+#include <stdio.h>
+#include <stdlib.h>
 /*
 
 Game()
@@ -21,6 +22,11 @@ Mate?()
 
 
 */
+
+typedef struct{
+    int i;
+    int j;
+} intPair;
 
 typedef struct
 {
