@@ -520,14 +520,31 @@ int validateMoveBishop(chessBoard *boardStruct, movePiece *mPiece) {
 
 int validateMoveKing(chessBoard *boardStruct, movePiece *mPiece) {
     
-    // TODO: King can't go right by another king!
-    
+    updateKingPositions(boardStruct,mPiece);
+
+    int kingColor = colorOfMovingPiece(boardStruct,mPiece);
+
+
     int i = mPiece->i;
     int j = mPiece->j;
     // part one of validity
     // call castling function
     if ((abs(mPiece->goalI - i) >= 0 && abs(mPiece->goalI - i) <= 1) &&
         (abs(mPiece->goalJ - j) >= 0 && abs(mPiece->goalJ - j) <= 1)) {
+            // King can't go right by another king!
+            for (int x = -1; x < 2;++x){
+                for (int y = -1; y < 2;++y){
+                    if (!(x == 0 && y == 0) && mPiece->goalI+x >= 0 && mPiece->goalI+x < 8 && mPiece->goalJ+y >= 0 && mPiece->goalJ+y < 8){
+                        int tempVal = boardStruct->board[mPiece->goalI+x][mPiece->goalJ+y];
+                        if (tempVal == KingBlack && kingColor == 0){
+                            return 0;
+                        } else if (tempVal == KingWhite && kingColor == 1) {
+                            return 0;
+                        }
+                    }
+                }
+            }
+
         if (isInCheck(boardStruct, mPiece, boardStruct->turn) &&
             RemovesChecks(boardStruct, mPiece)) {
             if (boardStruct->board[mPiece->goalI][mPiece->goalJ]  && !canTakeValid(boardStruct,mPiece)){
