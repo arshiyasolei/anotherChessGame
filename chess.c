@@ -199,18 +199,24 @@ int gameWin(chessBoard *boardStruct, movePiece *mPiece) {
     // there is no valid move left for whichever player and one is in 
     
     if (isInCheck(boardStruct, mPiece, boardStruct->turn)) {
+        printf("hello? %d\n",boardStruct->turn);
         // find all the enemy pieces that might be able to attack/black
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 for (int k = 0; k < 8; ++k) {
                     for (int l = 0; l < 8; ++l) {
+                        if (i != k && j != l){
+
+                        
                         int currentPiece = boardStruct->board[i][j];
+                        
                         movePiece simulPiece = {i, j, k, l};
                         if (currentPiece &&
                             colorOfMovingPiece(boardStruct, &simulPiece) ==
-                                !boardStruct->turn
+                                boardStruct->turn
 
                         ) {
+
                             int moveWasValid = 0;
                             switch (boardStruct
                                         ->board[simulPiece.i][simulPiece.j]) {
@@ -245,20 +251,26 @@ int gameWin(chessBoard *boardStruct, movePiece *mPiece) {
                                         boardStruct, &simulPiece);
                                     break;
                                 default:
+                                    moveWasValid = 0;
                                     break;
                             }
-                        
+
                             if (moveWasValid) {
-                                return 1;
+                                printf("simul piece %d %d %d %d %d vali %d\n",simulPiece.i,simulPiece.j,simulPiece.goalI,simulPiece.goalJ,boardStruct->board[simulPiece.i][simulPiece.j], moveWasValid);
+                                return 0;
                             }
+                        }
                         } 
                     }
                 }
             }
         }
+    } else if (!isInCheck(boardStruct, mPiece, boardStruct->turn)) {
+        printf("this one\n");
+        return 0;
     }
 
-    return 0;
+    return 1;
 }
 
 int updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
@@ -774,13 +786,13 @@ int validateMoveKnight(chessBoard *boardStruct, movePiece *mPiece) {
                 !canTakeValid(boardStruct, mPiece)) {
                 return 0;
             }
-            return 1;
+            return 50;
         } else if (RemovesChecks(boardStruct, mPiece)) {
             if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
                 !canTakeValid(boardStruct, mPiece)) {
                 return 0;
             }
-            return 1;
+            return 50;
         }
     }
     return 0;
