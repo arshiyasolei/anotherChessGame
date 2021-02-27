@@ -12,38 +12,36 @@
 #define KingBlack 7
 #define KingWhite 14
 
-//won't include kings here
-const int whitePieceArr[] = {14,2,10,11,13,12};
-const int blackPieceArr[] = {7,1,6,4,5,3};
+// won't include kings here
+const int whitePieceArr[] = {14, 2, 10, 11, 13, 12};
+const int blackPieceArr[] = {7, 1, 6, 4, 5, 3};
 
-
-int colorOfMovingPiece(chessBoard*boardStruct,movePiece*mPiece){
+int colorOfMovingPiece(chessBoard *boardStruct, movePiece *mPiece) {
     int type = 1;
-    for (int i = 0; i < 6;++i){
-        if (boardStruct->board[mPiece->i][mPiece->j] == whitePieceArr[i]){
+    for (int i = 0; i < 6; ++i) {
+        if (boardStruct->board[mPiece->i][mPiece->j] == whitePieceArr[i]) {
             type = 0;
             break;
-        } 
+        }
     }
     return type;
 }
-//checks to see whether we can take a piece that's diff than our color
+// checks to see whether we can take a piece that's diff than our color
 // nothing more that checking
-int canTakeValid(chessBoard *boardStruct, movePiece *mPiece){
-
+int canTakeValid(chessBoard *boardStruct, movePiece *mPiece) {
     int type = 1;
-    for (int i = 0; i < 6;++i){
-        if (boardStruct->board[mPiece->goalI][mPiece->goalJ] == whitePieceArr[i]){
+    for (int i = 0; i < 6; ++i) {
+        if (boardStruct->board[mPiece->goalI][mPiece->goalJ] ==
+            whitePieceArr[i]) {
             type = 0;
             break;
-        } 
+        }
     }
-    if (type != boardStruct->turn){
+    if (type != boardStruct->turn) {
         return 1;
     } else {
         return 0;
     }
-
 }
 
 void fillBoard(chessBoard *boardStruct) {
@@ -87,7 +85,8 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
             for (int start = j + 1; start <= mPiece->goalJ; ++start) {
                 //
                 if (boardStruct->board[i][start]) {
-                    if (start ==  mPiece->goalJ && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalJ &&
+                        canTakeValid(boardStruct, mPiece)) {
                         printf("yes\n");
                         return 0;
                     }
@@ -98,7 +97,8 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
         } else {
             for (int start = j - 1; start >= mPiece->goalJ; --start) {
                 if (boardStruct->board[i][start]) {
-                    if (start ==  mPiece->goalJ && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalJ &&
+                        canTakeValid(boardStruct, mPiece)) {
                         return 0;
                     }
                     return 1;
@@ -112,7 +112,8 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
         if (i < mPiece->goalI) {
             for (int start = i + 1; start <= mPiece->goalI; ++start) {
                 if (boardStruct->board[start][j]) {
-                    if (start ==  mPiece->goalI && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalI &&
+                        canTakeValid(boardStruct, mPiece)) {
                         return 0;
                     }
                     return 1;
@@ -122,7 +123,8 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
         } else {
             for (int start = i - 1; start >= mPiece->goalI; --start) {
                 if (boardStruct->board[start][j]) {
-                    if (start ==  mPiece->goalI && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalI &&
+                        canTakeValid(boardStruct, mPiece)) {
                         return 0;
                     }
                     return 1;
@@ -133,13 +135,13 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
     }
     // everything else (diagonals)
     else {
-        
         int temp = 0;
         if ((j < mPiece->goalJ) && (i < mPiece->goalI)) {
             temp = i + 1;
             for (int start = j + 1; start <= mPiece->goalJ; ++start) {
                 if (boardStruct->board[temp][start]) {
-                    if (start ==  mPiece->goalJ && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalJ &&
+                        canTakeValid(boardStruct, mPiece)) {
                         return 0;
                     }
                     return 1;
@@ -150,9 +152,10 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
         } else if ((j < mPiece->goalJ) && (i > mPiece->goalI)) {
             printf("somecorener\n");
             temp = i - 1;
-            for (int start = j +1; start <= mPiece->goalJ; ++start) {
+            for (int start = j + 1; start <= mPiece->goalJ; ++start) {
                 if (boardStruct->board[temp][start]) {
-                    if (start ==  mPiece->goalJ && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalJ &&
+                        canTakeValid(boardStruct, mPiece)) {
                         return 0;
                     }
                     return 1;
@@ -164,7 +167,8 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
             temp = i + 1;
             for (int start = j - 1; start >= mPiece->goalJ; --start) {
                 if (boardStruct->board[temp][start]) {
-                    if (start ==  mPiece->goalJ && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalJ &&
+                        canTakeValid(boardStruct, mPiece)) {
                         return 0;
                     }
                     return 1;
@@ -174,9 +178,10 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
             return 0;
         } else {
             temp = i - 1;
-            for (int start = j -1; start >= mPiece->goalJ; --start) {
+            for (int start = j - 1; start >= mPiece->goalJ; --start) {
                 if (boardStruct->board[temp][start]) {
-                    if (start ==  mPiece->goalJ && canTakeValid(boardStruct,mPiece)){
+                    if (start == mPiece->goalJ &&
+                        canTakeValid(boardStruct, mPiece)) {
                         return 0;
                     }
                     return 1;
@@ -185,11 +190,78 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
             }
             return 0;
         }
-        
     }
 }
 
-void updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
+
+
+int gameWin(chessBoard *boardStruct, movePiece *mPiece) {
+    // there is no valid move left for whichever player and one is in 
+    
+    if (isInCheck(boardStruct, mPiece, boardStruct->turn)) {
+        // find all the enemy pieces that might be able to attack/black
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                for (int k = 0; k < 8; ++k) {
+                    for (int l = 0; l < 8; ++l) {
+                        int currentPiece = boardStruct->board[i][j];
+                        movePiece simulPiece = {i, j, k, l};
+                        if (currentPiece &&
+                            colorOfMovingPiece(boardStruct, &simulPiece) ==
+                                !boardStruct->turn
+
+                        ) {
+                            int moveWasValid = 0;
+                            switch (boardStruct
+                                        ->board[simulPiece.i][simulPiece.j]) {
+                                case 1:
+                                case 2:
+                                    moveWasValid = validateMovePawn(
+                                        boardStruct, &simulPiece);
+                                    break;
+                                case 3:
+                                case 12:
+                                    moveWasValid = validateMoveBishop(
+                                        boardStruct, &simulPiece);
+                                    break;
+                                case 4:
+                                case 11:
+                                    moveWasValid = validateMoveKnight(
+                                        boardStruct, &simulPiece);
+                                    break;
+                                case 5:
+                                case 10:
+                                    moveWasValid = validateMoveRook(
+                                        boardStruct, &simulPiece);
+                                    break;
+                                case 7:
+                                case 14:
+                                    moveWasValid = validateMoveKing(
+                                        boardStruct, &simulPiece);
+                                    break;
+                                case 6:
+                                case 13:
+                                    moveWasValid = validateMoveQueen(
+                                        boardStruct, &simulPiece);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        
+                            if (moveWasValid) {
+                                return 1;
+                            }
+                        } 
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+int updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
     // leap of faith
     // if the piece that we are trying to move exists
     int moveWasValid = 0;
@@ -205,7 +277,6 @@ void updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
                 break;
             case 4:
             case 11:
-                printf("knight time poggers~\n");
                 moveWasValid = validateMoveKnight(boardStruct, mPiece);
                 break;
             case 5:
@@ -224,33 +295,41 @@ void updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
                 break;
         }
 
-        if (moveWasValid && colorOfMovingPiece(boardStruct,mPiece) == boardStruct->turn) {
+        if (moveWasValid &&
+            colorOfMovingPiece(boardStruct, mPiece) == boardStruct->turn) {
             int temp = boardStruct->board[mPiece->i][mPiece->j];
             boardStruct->board[mPiece->goalI][mPiece->goalJ] = temp;
             boardStruct->board[mPiece->i][mPiece->j] = 0;
+
+            if (moveWasValid == 3) {
+                boardStruct->board[boardStruct->lastPieceMoveCord.i]
+                                  [boardStruct->lastPieceMoveCord.j] = 0;
+            }
+
+            // store last piece move for remembering en passant
+            boardStruct->lastPieceMoveCord.i = mPiece->goalI;
+            boardStruct->lastPieceMoveCord.j = mPiece->goalJ;
+            if (moveWasValid == 2) {
+                boardStruct->lastMovePawnTwoUp = 1;
+            } else {
+                boardStruct->lastMovePawnTwoUp = 0;
+            }
 
             if (boardStruct->turn == 0)
                 boardStruct->turn = 1;
             else
                 boardStruct->turn = 0;
-        } else {
-            printf("oof %d %d\n",colorOfMovingPiece(boardStruct,mPiece) , boardStruct->turn);
-        }
-        printf("turn: %d\n",boardStruct->turn);
+        } 
+        printf("turn: %d\n", boardStruct->turn);
 
         // printf("Piece in check? %d\n", isInCheck(boardStruct, mPiece,
         // boardStruct->turn));
     }
-}
 
-int gameWin(chessBoard *boardStruct, movePiece *mPiece) {
-    // there is no valid move left for whichever player and one is in check
-    if (isInCheck(boardStruct, mPiece, !boardStruct->turn)) {
-        // find all the enemy pieces that might be able to attack/black
-        for (int i = 0; i < 8; ++i) {
-            for (int j = 0; j < 8; ++j) {
-            }
-        }
+    if (gameWin(boardStruct,mPiece)){
+        return 1;
+    } else {
+        return 0;
     }
 }
 
@@ -484,16 +563,96 @@ int validateMovePawn(chessBoard *boardStruct, movePiece *mPiece) {
         flag = -1;
     }
     // part one of validity
+    // first condition makes sure if its either one or two moves ahead!
     if (((mPiece->goalI - i) == flag) || ((mPiece->goalI - i) == flag * 2)) {
+        // TODO: en passant?
+        int twoUpFlag = 0;
+        // case where its just 2 up
+        if ((mPiece->goalI - i) == flag * 2) {
+            if (mPiece->goalJ != j) {
+                return 0;
+            }
+            if (flag == 1 && mPiece->i != 1) return 0;
+            if (flag == -1 && mPiece->i != 6) return 0;
+            twoUpFlag = 1;
+        }
+
+        // case where its 1 up or sides
+        if ((mPiece->goalI - i) == flag) {
+
+
+            // within range move
+            if (mPiece->goalJ > j + 1 || mPiece->goalJ < j - 1) {
+                return 0;
+            }
+
+            // enpassant
+            if (boardStruct->lastMovePawnTwoUp) {
+                if (boardStruct->lastPieceMoveCord.i != -1 &&
+                    boardStruct->lastPieceMoveCord.j != -1) {
+                    int enpasspiece =
+                        boardStruct->board[boardStruct->lastPieceMoveCord.i]
+                                          [boardStruct->lastPieceMoveCord.j];
+
+                    if (enpasspiece == PawnBlack || enpasspiece == PawnWhite) {
+                        // the move lines up with the enpassant side
+                        if (!boardStruct->board[mPiece->goalI][mPiece->goalJ]) {
+                            // last move was just a pawn sideways of curret pawn
+                            // that's about to be moved
+                            if (boardStruct->lastPieceMoveCord.j ==
+                                    mPiece->goalJ &&
+                                mPiece->i == boardStruct->lastPieceMoveCord.i) {
+                                // temporary simulate the unpassant
+
+                                movePiece newMove = {
+                                    mPiece->i, mPiece->j,
+                                    boardStruct->lastPieceMoveCord.i,
+                                    boardStruct->lastPieceMoveCord.j};
+
+                                if (canTakeValid(boardStruct, &newMove)) {
+                                    if (RemovesChecks(boardStruct, mPiece)) {
+                                        return 3;
+                                    } else {
+                                        // validate pawn will have side effects
+
+                                        return 0;
+                                    }
+                                } else {
+                                    return 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // if you want to go side ways, there better be be piece to pick
+            // from
+            if (!boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
+                (mPiece->goalJ == j + 1 || mPiece->goalJ == j - 1)) {
+                return 0;
+            }
+        }
+
+        // normal moves
+
         if (isInCheck(boardStruct, mPiece, boardStruct->turn) &&
             RemovesChecks(boardStruct, mPiece)) {
-                if (boardStruct->board[mPiece->goalI][mPiece->goalJ]  && !canTakeValid(boardStruct,mPiece)){
+            if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
+                !canTakeValid(boardStruct, mPiece)) {
                 return 0;
+            }
+            if (twoUpFlag) {
+                return 2;
             }
             return 1;
         } else if (RemovesChecks(boardStruct, mPiece)) {
-            if (boardStruct->board[mPiece->goalI][mPiece->goalJ]  && !canTakeValid(boardStruct,mPiece)){
+            if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
+                !canTakeValid(boardStruct, mPiece)) {
                 return 0;
+            }
+            if (twoUpFlag) {
+                return 2;
             }
             return 1;
         }
@@ -511,7 +670,7 @@ int validateMoveBishop(chessBoard *boardStruct, movePiece *mPiece) {
             !isJumpingOverPiece(boardStruct, mPiece)) {
             return 1;
         } else if (RemovesChecks(boardStruct, mPiece) &&
-            !isJumpingOverPiece(boardStruct, mPiece)) {
+                   !isJumpingOverPiece(boardStruct, mPiece)) {
             return 1;
         }
     }
@@ -519,11 +678,9 @@ int validateMoveBishop(chessBoard *boardStruct, movePiece *mPiece) {
 }
 
 int validateMoveKing(chessBoard *boardStruct, movePiece *mPiece) {
-    
-    updateKingPositions(boardStruct,mPiece);
+    updateKingPositions(boardStruct, mPiece);
 
-    int kingColor = colorOfMovingPiece(boardStruct,mPiece);
-
+    int kingColor = colorOfMovingPiece(boardStruct, mPiece);
 
     int i = mPiece->i;
     int j = mPiece->j;
@@ -531,28 +688,34 @@ int validateMoveKing(chessBoard *boardStruct, movePiece *mPiece) {
     // call castling function
     if ((abs(mPiece->goalI - i) >= 0 && abs(mPiece->goalI - i) <= 1) &&
         (abs(mPiece->goalJ - j) >= 0 && abs(mPiece->goalJ - j) <= 1)) {
-            // King can't go right by another king!
-            for (int x = -1; x < 2;++x){
-                for (int y = -1; y < 2;++y){
-                    if (!(x == 0 && y == 0) && mPiece->goalI+x >= 0 && mPiece->goalI+x < 8 && mPiece->goalJ+y >= 0 && mPiece->goalJ+y < 8){
-                        int tempVal = boardStruct->board[mPiece->goalI+x][mPiece->goalJ+y];
-                        if (tempVal == KingBlack && kingColor == 0){
-                            return 0;
-                        } else if (tempVal == KingWhite && kingColor == 1) {
-                            return 0;
-                        }
+        // King can't go right by another king!
+        for (int x = -1; x < 2; ++x) {
+            for (int y = -1; y < 2; ++y) {
+                if (!(x == 0 && y == 0) && mPiece->goalI + x >= 0 &&
+                    mPiece->goalI + x < 8 && mPiece->goalJ + y >= 0 &&
+                    mPiece->goalJ + y < 8) {
+                    int tempVal =
+                        boardStruct
+                            ->board[mPiece->goalI + x][mPiece->goalJ + y];
+                    if (tempVal == KingBlack && kingColor == 0) {
+                        return 0;
+                    } else if (tempVal == KingWhite && kingColor == 1) {
+                        return 0;
                     }
                 }
             }
+        }
 
         if (isInCheck(boardStruct, mPiece, boardStruct->turn) &&
             RemovesChecks(boardStruct, mPiece)) {
-            if (boardStruct->board[mPiece->goalI][mPiece->goalJ]  && !canTakeValid(boardStruct,mPiece)){
+            if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
+                !canTakeValid(boardStruct, mPiece)) {
                 return 0;
             }
             return 1;
         } else if (RemovesChecks(boardStruct, mPiece)) {
-            if (boardStruct->board[mPiece->goalI][mPiece->goalJ]  && !canTakeValid(boardStruct,mPiece)){
+            if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
+                !canTakeValid(boardStruct, mPiece)) {
                 return 0;
             }
             return 1;
@@ -565,15 +728,14 @@ int validateMoveQueen(chessBoard *boardStruct, movePiece *mPiece) {
     int i = mPiece->i;
     int j = mPiece->j;
     // part one of validity
-    printf("Queentest\n");
     if ((abs(mPiece->goalI - i) == 0) || (abs(mPiece->goalJ - j) == 0) ||
         (abs(mPiece->goalI - i) == abs(mPiece->goalJ - j))) {
         if (isInCheck(boardStruct, mPiece, boardStruct->turn) &&
             RemovesChecks(boardStruct, mPiece) &&
-            !isJumpingOverPiece(boardStruct, mPiece) ) {
+            !isJumpingOverPiece(boardStruct, mPiece)) {
             return 1;
         } else if (RemovesChecks(boardStruct, mPiece) &&
-            !isJumpingOverPiece(boardStruct, mPiece)) {
+                   !isJumpingOverPiece(boardStruct, mPiece)) {
             return 1;
         }
     }
@@ -586,8 +748,6 @@ int validateMoveRook(chessBoard *boardStruct, movePiece *mPiece) {
     int j = mPiece->j;
     // part one of validity
 
-    printf("rook jumping? %d %d\n", !isJumpingOverPiece(boardStruct, mPiece),
-           RemovesChecks(boardStruct, mPiece));
     if ((abs(mPiece->goalI - i) == 0) || (abs(mPiece->goalJ - j) == 0)) {
         if (isInCheck(boardStruct, mPiece, boardStruct->turn) &&
             RemovesChecks(boardStruct, mPiece) &&
@@ -610,12 +770,14 @@ int validateMoveKnight(chessBoard *boardStruct, movePiece *mPiece) {
         (abs(mPiece->goalI - i) == 1 && abs(mPiece->goalJ - j) == 2)) {
         if (isInCheck(boardStruct, mPiece, boardStruct->turn) &&
             RemovesChecks(boardStruct, mPiece)) {
-                            if (boardStruct->board[mPiece->goalI][mPiece->goalJ]  && !canTakeValid(boardStruct,mPiece)){
+            if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
+                !canTakeValid(boardStruct, mPiece)) {
                 return 0;
             }
             return 1;
         } else if (RemovesChecks(boardStruct, mPiece)) {
-            if (boardStruct->board[mPiece->goalI][mPiece->goalJ]  && !canTakeValid(boardStruct,mPiece)){
+            if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
+                !canTakeValid(boardStruct, mPiece)) {
                 return 0;
             }
             return 1;
@@ -644,59 +806,3 @@ int castleQueenSide(chessBoard *boardStruct, movePiece *mPiece) {
     } else {
     }
 }
-/*
-
-    if (isInCheckWhite(boardStruct, mPiece) &&
-        !whitePinned(boardStruct, mPiece) &&
-        whiteRemovesChecks(boardStruct, mPiece)) {
-        if (boardStruct->board[mPiece->i][mPiece->j] == PawnBlack) {
-            boardStruct->board[mPiece->goalI][mPiece->goalJ] = PawnBlack;
-        } else {
-            boardStruct->board[mPiece->goalI][mPiece->goalJ] = PawnWhite;
-        }
-        boardStruct->board[mPiece->i][mPiece->j] = 0;
-        return 1;
-    } else if (!isInCheckWhite(boardStruct, mPiece) &&
-               !whitePinned(boardStruct, mPiece)) {
-        if (boardStruct->board[mPiece->i][mPiece->j] == PawnBlack) {
-            boardStruct->board[mPiece->goalI][mPiece->goalJ] = PawnBlack;
-        } else {
-            boardStruct->board[mPiece->goalI][mPiece->goalJ] = PawnWhite;
-        }
-        boardStruct->board[mPiece->i][mPiece->j] = 0;
-        return 1;
-    }
-
-*/
-
-/*
-    switch (boardStruct->board[mPiece->i][mPiece->j]) {
-        case 1:
-        case 2:
-            validateMovePawn(boardStruct, mPiece);
-            break;
-        case 3:
-        case 12:
-            validateMoveBishop(boardStruct, mPiece);
-            break;
-        case 4:
-        case 11:
-            validateMoveKnight(boardStruct, mPiece);
-            break;
-        case 5:
-        case 10:
-            validateMoveRook(boardStruct, mPiece);
-            break;
-        case 6:
-        case 13:
-            validateMoveKing(boardStruct, mPiece);
-            break;
-        case 7:
-        case 14:
-            validateMoveQueen(boardStruct, mPiece);
-            break;
-        default:
-            break;
-    }
-
-    */

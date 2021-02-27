@@ -38,6 +38,8 @@ typedef struct
 {
     int board[8][8];
     int lostPieces[16];
+    int lastMovePawnTwoUp;
+    intPair lastPieceMoveCord;
     kingPos whiteKing;
     kingPos blackKing;
     int turn;
@@ -51,7 +53,7 @@ typedef struct
     int goalJ;
 } movePiece;
 
-void updateBoard(chessBoard*boardStruct,movePiece*mPiece);
+int updateBoard(chessBoard*boardStruct,movePiece*mPiece);
 
 int gameWin();
 
