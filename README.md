@@ -1,11 +1,13 @@
 # anotherChessGame
 
+Make sure to install CSFML and SFML before compiling!
+
 To compile
 ```
 make
 ```
 
-# To clean
+To clean
 ```
 make clean
 ```
