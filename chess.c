@@ -193,74 +193,75 @@ int isJumpingOverPiece(chessBoard *boardStruct, movePiece *mPiece) {
     }
 }
 
-
-
 int gameWin(chessBoard *boardStruct, movePiece *mPiece) {
-    // there is no valid move left for whichever player and one is in 
-    
+    // there is no valid move left for whichever player and one is in
+
     if (isInCheck(boardStruct, mPiece, boardStruct->turn)) {
-        printf("hello? %d\n",boardStruct->turn);
+        printf("hello? %d\n", boardStruct->turn);
         // find all the enemy pieces that might be able to attack/black
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 for (int k = 0; k < 8; ++k) {
                     for (int l = 0; l < 8; ++l) {
-                        if (i != k && j != l){
+                        if (i != k || j != l) {
+                            int currentPiece = boardStruct->board[i][j];
 
-                        
-                        int currentPiece = boardStruct->board[i][j];
-                        
-                        movePiece simulPiece = {i, j, k, l};
-                        if (currentPiece &&
-                            colorOfMovingPiece(boardStruct, &simulPiece) ==
-                                boardStruct->turn
+                            movePiece simulPiece = {i, j, k, l};
+                            if (currentPiece &&
+                                colorOfMovingPiece(boardStruct, &simulPiece) ==
+                                    boardStruct->turn
 
-                        ) {
+                            ) {
+                                int moveWasValid = 0;
+                                switch (boardStruct->board[simulPiece.i]
+                                                          [simulPiece.j]) {
+                                    case 1:
+                                    case 2:
+                                        moveWasValid = validateMovePawn(
+                                            boardStruct, &simulPiece);
+                                        break;
+                                    case 3:
+                                    case 12:
+                                        moveWasValid = validateMoveBishop(
+                                            boardStruct, &simulPiece);
+                                        break;
+                                    case 4:
+                                    case 11:
+                                        moveWasValid = validateMoveKnight(
+                                            boardStruct, &simulPiece);
+                                        break;
+                                    case 5:
+                                    case 10:
+                                        moveWasValid = validateMoveRook(
+                                            boardStruct, &simulPiece);
+                                        break;
+                                    case 7:
+                                    case 14:
+                                        moveWasValid = validateMoveKing(
+                                            boardStruct, &simulPiece);
+                                        break;
+                                    case 6:
+                                    case 13:
+                                        moveWasValid = validateMoveQueen(
+                                            boardStruct, &simulPiece);
+                                        break;
+                                    default:
+                                        moveWasValid = 0;
+                                        break;
+                                }
 
-                            int moveWasValid = 0;
-                            switch (boardStruct
-                                        ->board[simulPiece.i][simulPiece.j]) {
-                                case 1:
-                                case 2:
-                                    moveWasValid = validateMovePawn(
-                                        boardStruct, &simulPiece);
-                                    break;
-                                case 3:
-                                case 12:
-                                    moveWasValid = validateMoveBishop(
-                                        boardStruct, &simulPiece);
-                                    break;
-                                case 4:
-                                case 11:
-                                    moveWasValid = validateMoveKnight(
-                                        boardStruct, &simulPiece);
-                                    break;
-                                case 5:
-                                case 10:
-                                    moveWasValid = validateMoveRook(
-                                        boardStruct, &simulPiece);
-                                    break;
-                                case 7:
-                                case 14:
-                                    moveWasValid = validateMoveKing(
-                                        boardStruct, &simulPiece);
-                                    break;
-                                case 6:
-                                case 13:
-                                    moveWasValid = validateMoveQueen(
-                                        boardStruct, &simulPiece);
-                                    break;
-                                default:
-                                    moveWasValid = 0;
-                                    break;
-                            }
-
-                            if (moveWasValid) {
-                                printf("simul piece %d %d %d %d %d vali %d\n",simulPiece.i,simulPiece.j,simulPiece.goalI,simulPiece.goalJ,boardStruct->board[simulPiece.i][simulPiece.j], moveWasValid);
-                                return 0;
+                                if (moveWasValid) {
+                                    printf(
+                                        "simul piece %d %d %d %d %d vali %d\n",
+                                        simulPiece.i, simulPiece.j,
+                                        simulPiece.goalI, simulPiece.goalJ,
+                                        boardStruct
+                                            ->board[simulPiece.i][simulPiece.j],
+                                        moveWasValid);
+                                    return 0;
+                                }
                             }
                         }
-                        } 
                     }
                 }
             }
@@ -309,17 +310,18 @@ int updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
 
         if (moveWasValid &&
             colorOfMovingPiece(boardStruct, mPiece) == boardStruct->turn) {
-
+            // refactor..
             // check if its queenside castling move! j = 2
             if (moveWasValid == 80) {
                 int kingType = boardStruct->board[mPiece->i][mPiece->j];
                 int kingFlag = 7;
                 if (kingType == 7) {
                     kingFlag = 0;
-                } 
+                }
                 int temp = boardStruct->board[mPiece->i][mPiece->j];
                 boardStruct->board[mPiece->goalI][mPiece->goalJ] = temp;
-                boardStruct->board[mPiece->i][mPiece->j-1] = boardStruct->board[kingFlag][0];
+                boardStruct->board[mPiece->i][mPiece->j - 1] =
+                    boardStruct->board[kingFlag][0];
                 boardStruct->board[mPiece->i][mPiece->j] = 0;
                 boardStruct->board[kingFlag][0] = 0;
 
@@ -329,19 +331,26 @@ int updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
                 int kingFlag = 7;
                 if (kingType == 7) {
                     kingFlag = 0;
-                } 
+                }
                 int temp = boardStruct->board[mPiece->i][mPiece->j];
                 boardStruct->board[mPiece->goalI][mPiece->goalJ] = temp;
-                boardStruct->board[mPiece->i][mPiece->j+1] = boardStruct->board[kingFlag][7];
+                boardStruct->board[mPiece->i][mPiece->j + 1] =
+                    boardStruct->board[kingFlag][7];
                 boardStruct->board[mPiece->i][mPiece->j] = 0;
                 boardStruct->board[kingFlag][7] = 0;
 
             } else {
+                // pawn promotion
+
                 int temp = boardStruct->board[mPiece->i][mPiece->j];
+                if (moveWasValid == 100) {
+                    temp = QueenBlack;
+                } else if (moveWasValid == 110) {
+                    temp = QueenWhite;
+                }
                 boardStruct->board[mPiece->goalI][mPiece->goalJ] = temp;
                 boardStruct->board[mPiece->i][mPiece->j] = 0;
             }
-
 
             if (moveWasValid == 3) {
                 boardStruct->board[boardStruct->lastPieceMoveCord.i]
@@ -361,14 +370,14 @@ int updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
                 boardStruct->turn = 1;
             else
                 boardStruct->turn = 0;
-        } 
+        }
         printf("turn: %d\n", boardStruct->turn);
 
         // printf("Piece in check? %d\n", isInCheck(boardStruct, mPiece,
         // boardStruct->turn));
     }
 
-    if (gameWin(boardStruct,mPiece)){
+    if (gameWin(boardStruct, mPiece)) {
         return 1;
     } else {
         return 0;
@@ -597,7 +606,6 @@ int RemovesChecks(chessBoard *boardStruct, movePiece *mPiece) {
 }
 
 int validateMovePawn(chessBoard *boardStruct, movePiece *mPiece) {
-
     // TODO: add promotion (auto promote to Queen)
     int i = mPiece->i;
     int j = mPiece->j;
@@ -623,8 +631,6 @@ int validateMovePawn(chessBoard *boardStruct, movePiece *mPiece) {
 
         // case where its 1 up or sides
         if ((mPiece->goalI - i) == flag) {
-
-
             // within range move
             if (mPiece->goalJ > j + 1 || mPiece->goalJ < j - 1) {
                 return 0;
@@ -657,8 +663,6 @@ int validateMovePawn(chessBoard *boardStruct, movePiece *mPiece) {
                                     if (RemovesChecks(boardStruct, mPiece)) {
                                         return 3;
                                     } else {
-                                        // validate pawn will have side effects
-
                                         return 0;
                                     }
                                 } else {
@@ -689,6 +693,13 @@ int validateMovePawn(chessBoard *boardStruct, movePiece *mPiece) {
             if (twoUpFlag) {
                 return 2;
             }
+            if (TYPEPAWN == PawnBlack && mPiece->goalI == 7) {
+                // black pawn promote
+                return 100;
+            } else if (TYPEPAWN == PawnWhite && mPiece->goalI == 0) {
+                // white pawn promote
+                return 110;
+            }
             return 1;
         } else if (RemovesChecks(boardStruct, mPiece)) {
             if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
@@ -697,6 +708,14 @@ int validateMovePawn(chessBoard *boardStruct, movePiece *mPiece) {
             }
             if (twoUpFlag) {
                 return 2;
+            }
+            if (TYPEPAWN == PawnBlack && mPiece->goalI == 7) {
+                // black pawn promote
+                printf("yes pawn promote!\n");
+                return 100;
+            } else if (TYPEPAWN == PawnWhite && mPiece->goalI == 0) {
+                // white pawn promote
+                return 110;
             }
             return 1;
         }
@@ -723,10 +742,10 @@ int validateMoveBishop(chessBoard *boardStruct, movePiece *mPiece) {
 
 int validateMoveKing(chessBoard *boardStruct, movePiece *mPiece) {
     updateKingPositions(boardStruct, mPiece);
-    
-    if (castleQueenSide(boardStruct,mPiece)){
+
+    if (castleQueenSide(boardStruct, mPiece)) {
         return 80;
-    } else if (castleKingSide(boardStruct,mPiece)){
+    } else if (castleKingSide(boardStruct, mPiece)) {
         return 90;
     }
     int kingColor = colorOfMovingPiece(boardStruct, mPiece);
@@ -807,7 +826,7 @@ int validateMoveRook(chessBoard *boardStruct, movePiece *mPiece) {
     // make sure goali , goalj reaches the first blocking piece
     int i = mPiece->i;
     int j = mPiece->j;
-    
+
     // part one of validity
 
     if ((abs(mPiece->goalI - i) == 0) || (abs(mPiece->goalJ - j) == 0)) {
@@ -815,13 +834,13 @@ int validateMoveRook(chessBoard *boardStruct, movePiece *mPiece) {
             RemovesChecks(boardStruct, mPiece) &&
             !isJumpingOverPiece(boardStruct, mPiece)) {
             // refactor ...
-            if (i == 0 && j == 0){
+            if (i == 0 && j == 0) {
                 boardStruct->castleStats.BlackRookQMoved = 1;
             } else if (i == 7 && j == 0) {
-            boardStruct->castleStats.WhiteRookQMoved = 1;
+                boardStruct->castleStats.WhiteRookQMoved = 1;
             } else if (i == 0 && j == 7) {
                 boardStruct->castleStats.BlackRookKMoved = 1;
-            } else if (i == 7 && j == 7){
+            } else if (i == 7 && j == 7) {
                 boardStruct->castleStats.WhiteRookKMoved = 1;
             }
             return 1;
@@ -829,13 +848,13 @@ int validateMoveRook(chessBoard *boardStruct, movePiece *mPiece) {
                    RemovesChecks(boardStruct, mPiece) &&
                    !isJumpingOverPiece(boardStruct, mPiece)) {
             // refactor
-            if (i == 0 && j == 0){
+            if (i == 0 && j == 0) {
                 boardStruct->castleStats.BlackRookQMoved = 1;
             } else if (i == 7 && j == 0) {
                 boardStruct->castleStats.WhiteRookQMoved = 1;
             } else if (i == 0 && j == 7) {
                 boardStruct->castleStats.BlackRookKMoved = 1;
-            } else if (i == 7 && j == 7){
+            } else if (i == 7 && j == 7) {
                 boardStruct->castleStats.WhiteRookKMoved = 1;
             }
             return 1;
@@ -869,29 +888,30 @@ int validateMoveKnight(chessBoard *boardStruct, movePiece *mPiece) {
 }
 
 int castleKingSide(chessBoard *boardStruct, movePiece *mPiece) {
-
     int kingType = boardStruct->board[mPiece->i][mPiece->j];
-    
+
     // king has not moved
     // rook has not moved
     if (kingType == 14) {
-        if (boardStruct->castleStats.WhiteKingMoved || boardStruct->castleStats.WhiteRookKMoved){
+        if (boardStruct->castleStats.WhiteKingMoved ||
+            boardStruct->castleStats.WhiteRookKMoved) {
             return 0;
         }
-        if (mPiece->goalJ != 6){
+        if (mPiece->goalJ != 6) {
             return 0;
         }
     } else {
-        if (boardStruct->castleStats.BlackKingMoved || boardStruct->castleStats.BlackRookKMoved){
+        if (boardStruct->castleStats.BlackKingMoved ||
+            boardStruct->castleStats.BlackRookKMoved) {
             return 0;
         }
-        if (mPiece->goalJ != 6){
+        if (mPiece->goalJ != 6) {
             return 0;
         }
     }
 
     // king is not in check
-    if (isInCheck(boardStruct,mPiece,boardStruct->turn)){
+    if (isInCheck(boardStruct, mPiece, boardStruct->turn)) {
         return 0;
     }
 
@@ -899,16 +919,16 @@ int castleKingSide(chessBoard *boardStruct, movePiece *mPiece) {
     int kingFlag = 7;
     if (kingType == 7) {
         kingFlag = 0;
-    } 
-    // check squares 5,6 in j 
-    for (int square = 5; square < 7;++square){
-        if (boardStruct->board[kingFlag][square]){
+    }
+    // check squares 5,6 in j
+    for (int square = 5; square < 7; ++square) {
+        if (boardStruct->board[kingFlag][square]) {
             return 0;
         }
     }
 
     // king won't get checked DURING the castiling!
-    for (int square = 5; square < 7;++square){
+    for (int square = 5; square < 7; ++square) {
         // simulate as if the king was moving through those squares
         movePiece tempMove;
         // change oringinal king pos to nothing and move it
@@ -919,13 +939,12 @@ int castleKingSide(chessBoard *boardStruct, movePiece *mPiece) {
         tempMove.j = 4;
         tempMove.goalI = kingFlag;
         tempMove.goalJ = square;
-        int checkRes = isInCheck(boardStruct,&tempMove,boardStruct->turn);
+        int checkRes = isInCheck(boardStruct, &tempMove, boardStruct->turn);
         boardStruct->board[kingFlag][4] = swap;
         boardStruct->board[kingFlag][square] = 0;
-        if (checkRes){
+        if (checkRes) {
             return 0;
         }
-
     }
 
     if (kingType == 14) {
@@ -937,8 +956,6 @@ int castleKingSide(chessBoard *boardStruct, movePiece *mPiece) {
     }
 
     return 1;
-
-
 }
 
 int hasKingMoved() {}
@@ -946,29 +963,30 @@ int hasKingMoved() {}
 int hasRookMoved() {}
 
 int castleQueenSide(chessBoard *boardStruct, movePiece *mPiece) {
-
     int kingType = boardStruct->board[mPiece->i][mPiece->j];
-    
+
     // king has not moved
     // rook has not moved
     if (kingType == 14) {
-        if (boardStruct->castleStats.WhiteKingMoved || boardStruct->castleStats.WhiteRookQMoved){
+        if (boardStruct->castleStats.WhiteKingMoved ||
+            boardStruct->castleStats.WhiteRookQMoved) {
             return 0;
         }
-        if (mPiece->goalJ != 2){
+        if (mPiece->goalJ != 2) {
             return 0;
         }
     } else {
-        if (boardStruct->castleStats.BlackKingMoved || boardStruct->castleStats.BlackRookQMoved){
+        if (boardStruct->castleStats.BlackKingMoved ||
+            boardStruct->castleStats.BlackRookQMoved) {
             return 0;
         }
-        if (mPiece->goalJ != 2){
+        if (mPiece->goalJ != 2) {
             return 0;
         }
     }
 
     // king is not in check
-    if (isInCheck(boardStruct,mPiece,boardStruct->turn)){
+    if (isInCheck(boardStruct, mPiece, boardStruct->turn)) {
         return 0;
     }
 
@@ -976,16 +994,16 @@ int castleQueenSide(chessBoard *boardStruct, movePiece *mPiece) {
     int kingFlag = 7;
     if (kingType == 7) {
         kingFlag = 0;
-    } 
-    // check squares 1,2,3 in j 
-    for (int square = 1; square < 4;++square){
-        if (boardStruct->board[kingFlag][square]){
+    }
+    // check squares 1,2,3 in j
+    for (int square = 1; square < 4; ++square) {
+        if (boardStruct->board[kingFlag][square]) {
             return 0;
         }
     }
 
     // king won't get checked DURING the castiling!
-    for (int square = 2; square < 4;++square){
+    for (int square = 2; square < 4; ++square) {
         // simulate as if the king was moving through those squares
         movePiece tempMove;
         // change oringinal king pos to nothing and move it
@@ -996,13 +1014,12 @@ int castleQueenSide(chessBoard *boardStruct, movePiece *mPiece) {
         tempMove.j = 4;
         tempMove.goalI = kingFlag;
         tempMove.goalJ = square;
-        int checkRes = isInCheck(boardStruct,&tempMove,boardStruct->turn);
+        int checkRes = isInCheck(boardStruct, &tempMove, boardStruct->turn);
         boardStruct->board[kingFlag][4] = swap;
         boardStruct->board[kingFlag][square] = 0;
-        if (checkRes){
+        if (checkRes) {
             return 0;
         }
-
     }
 
     if (kingType == 14) {

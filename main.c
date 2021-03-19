@@ -155,7 +155,7 @@ int main(int argc, char *args[]) {
         if (validMove){
             if (updateBoard(&board, &p)){
                 printf("game is over!\n");
-                break;
+                
             }
             validMove = 0;
         }
