@@ -22,6 +22,14 @@ Mate?()
 
 
 */
+typedef struct{
+    int WhiteKingMoved;
+    int WhiteRookKMoved;
+    int WhiteRookQMoved;
+    int BlackKingMoved;
+    int BlackRookKMoved;
+    int BlackRookQMoved;
+} thingMoved;
 
 typedef struct{
     int i;
@@ -42,6 +50,7 @@ typedef struct
     intPair lastPieceMoveCord;
     kingPos whiteKing;
     kingPos blackKing;
+    thingMoved castleStats;
     int turn;
 } chessBoard;
 
@@ -60,6 +69,10 @@ int gameWin();
 int gameDraw();
 
 int isInCheck();
+
+int castleKingSide(chessBoard*,movePiece*);
+
+int castleQueenSide(chessBoard*,movePiece*);
 
 int validateMovePawn(chessBoard *boardStruct, movePiece *movePiece);
 

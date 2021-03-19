@@ -87,7 +87,7 @@ void draw(sfRenderWindow *window, chessBoard *board) {
 
 int main(int argc, char *args[]) {
     
-    chessBoard board = {.lastMovePawnTwoUp = 0,.lastPieceMoveCord = {-1,-1},.turn = 0,.board = {{5, 4, 3, 6, 7, 3, 4, 5},
+    chessBoard board = {.castleStats = {0,0,0,0},.lastMovePawnTwoUp = 0,.lastPieceMoveCord = {-1,-1},.turn = 0,.board = {{5, 4, 3, 6, 7, 3, 4, 5},
                                     {1, 1, 1, 1, 1, 1, 1, 1},
                                     {0, 0, 0, 0, 0, 0, 0, 0},
                                     {0, 0, 0, 0, 0, 0, 0, 0},
@@ -155,6 +155,7 @@ int main(int argc, char *args[]) {
         if (validMove){
             if (updateBoard(&board, &p)){
                 printf("game is over!\n");
+                break;
             }
             validMove = 0;
         }

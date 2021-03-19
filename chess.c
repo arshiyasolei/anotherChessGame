@@ -309,9 +309,28 @@ int updateBoard(chessBoard *boardStruct, movePiece *mPiece) {
 
         if (moveWasValid &&
             colorOfMovingPiece(boardStruct, mPiece) == boardStruct->turn) {
-            int temp = boardStruct->board[mPiece->i][mPiece->j];
-            boardStruct->board[mPiece->goalI][mPiece->goalJ] = temp;
-            boardStruct->board[mPiece->i][mPiece->j] = 0;
+
+            // check if its queenside castling move! j = 2
+            if (moveWasValid == 80) {
+                int kingType = boardStruct->board[mPiece->i][mPiece->j];
+                int kingFlag = 7;
+                if (kingType == 7) {
+                    kingFlag = 0;
+                } 
+                int temp = boardStruct->board[mPiece->i][mPiece->j];
+                boardStruct->board[mPiece->goalI][mPiece->goalJ] = temp;
+                boardStruct->board[mPiece->i][mPiece->j-1] = boardStruct->board[kingFlag][0];
+                boardStruct->board[mPiece->i][mPiece->j] = 0;
+                boardStruct->board[kingFlag][0] = 0;
+
+            } else if (moveWasValid == 90) {
+
+            } else {
+                int temp = boardStruct->board[mPiece->i][mPiece->j];
+                boardStruct->board[mPiece->goalI][mPiece->goalJ] = temp;
+                boardStruct->board[mPiece->i][mPiece->j] = 0;
+            }
+
 
             if (moveWasValid == 3) {
                 boardStruct->board[boardStruct->lastPieceMoveCord.i]
@@ -577,7 +596,7 @@ int validateMovePawn(chessBoard *boardStruct, movePiece *mPiece) {
     // part one of validity
     // first condition makes sure if its either one or two moves ahead!
     if (((mPiece->goalI - i) == flag) || ((mPiece->goalI - i) == flag * 2)) {
-        // TODO: en passant?
+        // en passant
         int twoUpFlag = 0;
         // case where its just 2 up
         if ((mPiece->goalI - i) == flag * 2) {
@@ -691,9 +710,14 @@ int validateMoveBishop(chessBoard *boardStruct, movePiece *mPiece) {
 
 int validateMoveKing(chessBoard *boardStruct, movePiece *mPiece) {
     updateKingPositions(boardStruct, mPiece);
-
+    
+    if (castleQueenSide(boardStruct,mPiece)){
+        return 80;
+    } else if (castleKingSide(boardStruct,mPiece)){
+        return 90;
+    }
     int kingColor = colorOfMovingPiece(boardStruct, mPiece);
-
+    int kingType = boardStruct->board[mPiece->i][mPiece->j];
     int i = mPiece->i;
     int j = mPiece->j;
     // part one of validity
@@ -724,11 +748,23 @@ int validateMoveKing(chessBoard *boardStruct, movePiece *mPiece) {
                 !canTakeValid(boardStruct, mPiece)) {
                 return 0;
             }
+            // refactor later..
+            if (kingType == 14) {
+                boardStruct->castleStats.WhiteKingMoved = 1;
+            } else {
+                boardStruct->castleStats.BlackKingMoved = 1;
+            }
             return 1;
         } else if (RemovesChecks(boardStruct, mPiece)) {
             if (boardStruct->board[mPiece->goalI][mPiece->goalJ] &&
                 !canTakeValid(boardStruct, mPiece)) {
                 return 0;
+            }
+            // refactor later
+            if (kingType == 14) {
+                boardStruct->castleStats.WhiteKingMoved = 1;
+            } else {
+                boardStruct->castleStats.BlackKingMoved = 1;
             }
             return 1;
         }
@@ -758,16 +794,37 @@ int validateMoveRook(chessBoard *boardStruct, movePiece *mPiece) {
     // make sure goali , goalj reaches the first blocking piece
     int i = mPiece->i;
     int j = mPiece->j;
+    
     // part one of validity
 
     if ((abs(mPiece->goalI - i) == 0) || (abs(mPiece->goalJ - j) == 0)) {
         if (isInCheck(boardStruct, mPiece, boardStruct->turn) &&
             RemovesChecks(boardStruct, mPiece) &&
             !isJumpingOverPiece(boardStruct, mPiece)) {
+            // refactor ...
+            if (i == 0 && j == 0){
+                boardStruct->castleStats.BlackRookQMoved = 1;
+            } else if (i == 7 && j == 0) {
+            boardStruct->castleStats.WhiteRookQMoved = 1;
+            } else if (i == 0 && j == 7) {
+                boardStruct->castleStats.BlackRookKMoved = 1;
+            } else if (i == 7 && j == 7){
+                boardStruct->castleStats.WhiteRookKMoved = 1;
+            }
             return 1;
         } else if (!isInCheck(boardStruct, mPiece, boardStruct->turn) &&
                    RemovesChecks(boardStruct, mPiece) &&
                    !isJumpingOverPiece(boardStruct, mPiece)) {
+            // refactor
+            if (i == 0 && j == 0){
+                boardStruct->castleStats.BlackRookQMoved = 1;
+            } else if (i == 7 && j == 0) {
+                boardStruct->castleStats.WhiteRookQMoved = 1;
+            } else if (i == 0 && j == 7) {
+                boardStruct->castleStats.BlackRookKMoved = 1;
+            } else if (i == 7 && j == 7){
+                boardStruct->castleStats.WhiteRookKMoved = 1;
+            }
             return 1;
         }
     }
@@ -805,16 +862,72 @@ int hasKingMoved() {}
 int hasRookMoved() {}
 
 int castleQueenSide(chessBoard *boardStruct, movePiece *mPiece) {
-    // king has not moved
-    // king is not in check
-    // no pieces between king and rook
-    // rook has not moved
-    // king won't get checked DURING the castiling!
-    if (boardStruct->board[mPiece->i][mPiece->j] == KingWhite) {
-        if (!isInCheck(boardStruct, mPiece, 0)
 
-        ) {
+    int kingType = boardStruct->board[mPiece->i][mPiece->j];
+    
+    // king has not moved
+    // rook has not moved
+    if (kingType == 14) {
+        if (boardStruct->castleStats.WhiteKingMoved || boardStruct->castleStats.WhiteRookQMoved){
+            return 0;
+        }
+        if (mPiece->goalJ != 2){
+            return 0;
         }
     } else {
+        if (boardStruct->castleStats.BlackKingMoved || boardStruct->castleStats.BlackRookQMoved){
+            return 0;
+        }
+        if (mPiece->goalJ != 2){
+            return 0;
+        }
     }
+
+    // king is not in check
+    if (isInCheck(boardStruct,mPiece,boardStruct->turn)){
+        return 0;
+    }
+
+    // no pieces between king and rook
+    int kingFlag = 7;
+    if (kingType == 7) {
+        kingFlag = 0;
+    } 
+    // check squares 1,2,3 in j 
+    for (int square = 1; square < 4;++square){
+        if (boardStruct->board[kingFlag][square]){
+            return 0;
+        }
+    }
+
+    // king won't get checked DURING the castiling!
+    for (int square = 2; square < 4;++square){
+        // simulate as if the king was moving through those squares
+        movePiece tempMove;
+        // change oringinal king pos to nothing and move it
+        int swap = boardStruct->board[kingFlag][4];
+        boardStruct->board[kingFlag][4] = 0;
+        boardStruct->board[kingFlag][square] = swap;
+        tempMove.i = kingFlag;
+        tempMove.j = 4;
+        tempMove.goalI = kingFlag;
+        tempMove.goalJ = square;
+        int checkRes = isInCheck(boardStruct,&tempMove,boardStruct->turn);
+        boardStruct->board[kingFlag][4] = swap;
+        boardStruct->board[kingFlag][square] = 0;
+        if (checkRes){
+            return 0;
+        }
+
+    }
+
+    if (kingType == 14) {
+        boardStruct->castleStats.WhiteKingMoved = 1;
+        boardStruct->castleStats.WhiteRookQMoved = 1;
+    } else {
+        boardStruct->castleStats.BlackKingMoved = 1;
+        boardStruct->castleStats.BlackRookQMoved = 1;
+    }
+
+    return 1;
 }
